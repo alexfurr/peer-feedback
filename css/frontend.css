@@ -1,0 +1,118 @@
+.peerFeedbackTextarea
+{
+
+	border:1px solid #ccc;
+	padding:5px;
+	width: 90%;
+    height: 5em;
+	font-size:16px;	
+	
+}
+
+.peerFeedbackDistributeTextbox
+{
+	
+	border: 2px solid #cdcdcd;
+	font-size: 20px;
+	width:50px;
+	padding:6px;
+	text-align:center;
+}
+
+
+
+/* The Div surrounding the student form */
+div .peerFeedbackStudentDiv
+{
+	padding:1px 0px 20px 10px;
+	border-bottom:2px solid #ccc;
+}
+
+div > .feedbackSuccess
+{
+	border:1px solid #90f994;
+	padding:10px;
+	background:#e5ffe6;
+	width: 90%;
+	margin-top:10px;
+	
+	
+}
+
+div > .feedbackAlert
+{
+	border:1px solid #99a04b;
+	padding:10px;
+	background:#fdffea;
+	width: 90%;
+	margin-top:10px;
+	
+	
+}
+
+div > .feedbackFail
+{
+	border:1px solid #c12b0d;
+	padding:10px;
+	background:#ffe5e0;
+	width: 90%;
+	margin-top:10px;
+	
+}
+
+
+
+
+
+/* New award popup dialog
+---------------------------- */
+
+#peerFeedbackCompletePopup {
+	position:	fixed;
+	top:		30%;
+	width:		40%;
+	left:		30%;
+	background:	#fff;
+	border:		1px solid #ccc;
+	box-shadow: 0px 22px 64px 16px rgba(0, 0, 0, 0.77);
+	text-align: center;
+	padding:	30px;
+}
+
+#peerFeedbackCompletePopup h3 {
+    margin: 10px 0 15px 0;
+}
+
+
+/* buttons */
+
+.ek-button
+{
+	padding:10px;
+	border:1px solid #ccc;	
+	border-radius:5px;
+	background:#336699;
+	color:#f7f7f7;
+}
+
+.ek-button:hover
+{
+	cursor:pointer;
+	background:#23476b;
+	color:#fff;	
+}
+
+
+.writtenFeedbackDiv
+{
+	padding-top:30px;
+}
+
+
+.peerFeedbackSubmitButtonDiv
+{
+	clear:both;
+	margin:15px 0px;
+}
+
+

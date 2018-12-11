@@ -1,0 +1,205 @@
+.rubricTable
+{
+	border-collapse: collapse;
+
+}
+
+.successText
+{
+	color:#090;	
+}
+
+.smallText
+{
+	font-size:12px;
+}
+
+.fadeText
+{
+	color:#ccc;
+}
+
+.alertText
+{
+	color:#F60;
+}
+.failText
+{
+	color:#af1616;
+}
+
+.rubricTable
+{
+	border-collapse: collapse;
+
+}
+
+.rubricTable td, .rubricTable th
+{
+	border:1px solid #ccc;
+	padding:10px;
+	width:100px;
+	vertical-align: text-top;
+}
+
+.rubricTable .descriptor
+{
+	font-size:12px;
+}
+
+
+.rubricTableClickable:hover, .rubricTableClickable label.descriptor {
+
+/*	background: #e1e1e1; */
+	cursor: pointer;
+}
+
+.rubricTable tr:hover
+{
+	background:#f1f1f1;
+}
+
+.rubricTable .td-toggle
+{
+	text-align: center;
+}
+
+.rubricTable .td-highlight
+{
+	background-color:#153b77;
+	color:#fff;
+	font-weight:bold;
+}
+
+
+.rubricTable .td-green-highlight 
+{
+	background:#090;
+	color:#fff;
+}
+
+
+
+.feedbackTextResponse
+{
+	border:1px solid #ccc;
+	margin: 20px 0px 20px 0px;
+	padding:0px 10px 0px 20px;
+	box-shadow: 4px 4px 12px #888888;
+	width:90%;
+	
+}
+
+
+.feedbackTextResponse blockquote {
+	display:block;
+  padding: 15px 20px 15px 45px;
+  margin: 0 0 20px;
+  position: relative;
+  
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #666;
+  text-align: justify;
+  
+}
+.feedbackTextResponse blockquote:before {
+content: "\201C"; /*Unicode for Left Double Quote*/
+  
+  /*Font*/
+  font-family: Georgia, serif;
+  font-size: 60px;
+  font-weight: bold;
+  color: #999;
+  
+  /*Positioning*/
+  position: absolute;
+  left: 10px;
+  top:5px;
+}
+
+/*Reset to make sure*/
+.feedbackTextResponse  blockquote::after{
+  /*Reset to make sure*/
+  content: "";
+}
+
+
+/* likert Scales */
+
+.aspf_likertLeft, .aspf_likertRight
+{
+	background:#666;
+	color:#fff;
+	font-style:italic;
+}
+	
+	
+
+.aspf_likertLeft
+{
+	text-align:right;
+}
+
+
+.feedbackTextboxResponse
+{
+	border:1px solid #ccc;
+	padding:10px 20px;
+	background:#fff;
+	margin:20px 20px;
+	border-left:solid 10px #ccc;
+	
+	
+}
+
+
+.pf_contentBox
+{
+	border:1px solid #ccc;
+	padding:10px 20px;
+	background:#fff;
+	margin:20px 0px;
+	margin-right:20px;
+}
+
+
+/* Report */
+.peerFinalMarkWrap
+{
+	display: flex;
+	justify-content: center;	
+	
+}
+
+.peerFinalMarkWrap > div
+{
+	padding:20px 10px;
+	text-align:center;
+	border:1px solid #ccc;
+	border-radius:30px;
+	background:#fff;
+	margin:20px;
+	width:120px;
+	font-size:18px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);	
+}
+
+.peerFinalMarkWrap .boxTitle
+{
+	font-size:14px;
+	padding-bottom:10px;
+}
+.peerFinalMarkWrap .myGrade
+{
+	font-size:24px;
+	font-weight:bold;
+}
+
+.peerFinalMarkWrap .penalty
+{
+	padding-top:10px;
+	font-size:12px;
+}
