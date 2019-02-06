@@ -85,6 +85,7 @@ class peerfeedbackActions {
 			$message.= "Do not reply to this message";
 			 
 			wp_mail( $to, $subject, $message );
+			
 		}		
 		
 		

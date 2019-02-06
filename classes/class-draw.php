@@ -22,8 +22,14 @@ class ASPFdraw {
 			if(isset($_GET['preview']))
 			{
 				$preview=true;
+				
+				// check the are editors or above
+
+				if( !current_user_can( 'delete_others_pages'  ) )
+				{
+					return 'You don\'t have access to this page';	
+				}
 			}
-			
 			
 			$currentFeedbackUserID = $_GET['userID'];	
 			$currentPassword = $_GET['password'];
@@ -59,13 +65,22 @@ class ASPFdraw {
 			$endDate= get_post_meta($projectID,'endDate',true);
 			$anon_feedback= get_post_meta($projectID,'anon_feedback',true);		
 			$allowWrittenFeedback = get_post_meta($projectID,'allowWrittenFeedback',true);	
+	
 			
+			$showPeerPage = false;
 			
+			if($project_status==1 || $feedback_status==1 || $preview==true)
+			{
+				$showPeerPage=true;
+			}
+			
+
 			
 			// Check if its available
-			if($project_status<>1 && $preview==false)
+			if($showPeerPage==false)
 			{
-				$theContent='This feedback project is not available';
+				
+				$theContent='<hr/>This feedback project is not available';
 				return $theContent;
 			}
 			
@@ -687,7 +702,9 @@ class ASPFdraw {
 		{
 			return 'Nobody has given you any feedback';
 		}		
+
 		
+		echo 'feedbackType = '.$feedbackType;
 		switch ($feedbackType)
 		{
 			case "distribution":
@@ -700,9 +717,6 @@ class ASPFdraw {
 				$myFinalScore = $myMarksArray['finalScore'];
 				$groupMark = $myMarksArray['groupMark'];
 				$nonSubmissionPenalty = $myMarksArray['nonSubmissionPenalty'];
-
-
-				
 				
 				
 				$str.='<div class="peerFinalMarkWrap">';				
@@ -713,7 +727,7 @@ class ASPFdraw {
 				$str.= '<div><div class="boxTitle">My Grade</div>';
 				$str.='<div class="myGrade">'.$myFinalScore.'%</div>';
 				
-				$nonSubmissionPenalty= 20;
+				
 				if($nonSubmissionPenalty>=1)
 				{
 					$str.='<div class="penalty failText">Includes a -'.$nonSubmissionPenalty.'% non completion penalty</div>';

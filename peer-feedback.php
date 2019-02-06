@@ -2,7 +2,7 @@
 /*
 Plugin Name: Peer Feedback
 Description: Create project groups and allow students to give feedback on peer performance
-Version: 0.1
+Version: 0.2.1
 Author: Alex Furr
 License: GPL
 */
