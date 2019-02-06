@@ -5,6 +5,7 @@ Description: Create project groups and allow students to give feedback on peer p
 Version: 0.2.1
 Author: Alex Furr
 License: GPL
+GitHub Plugin URI: https://github.com/ImperialCollegeLondon/peer-feedback
 */
 
 
