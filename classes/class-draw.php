@@ -704,19 +704,22 @@ class ASPFdraw {
 		}		
 
 		
-		echo 'feedbackType = '.$feedbackType;
 		switch ($feedbackType)
 		{
 			case "distribution":
 			case "likert":
 		
 			
-				$masterGroupArray = peerFeedback_utils::generateGroupMarksArray($args);
+				$masterGroupMarkArray = peerFeedback_utils::generateGroupMarksArray($args);
+				// get the array version
+				$masterGroupArray = $masterGroupMarkArray['array'];
+			
 
 				$myMarksArray = $masterGroupArray[$targetUserID];
 				$myFinalScore = $myMarksArray['finalScore'];
 				$groupMark = $myMarksArray['groupMark'];
 				$nonSubmissionPenalty = $myMarksArray['nonSubmissionPenalty'];
+
 				
 				
 				$str.='<div class="peerFinalMarkWrap">';				

@@ -113,6 +113,7 @@ class peerFeedback_utils
 	static function generateGroupMarksArray($args)
 	{
 		
+		$tableStr = ''; // Define the table string
 		$masterGroupArray = array();
 		$groupID = $args['groupID'];
 		
@@ -133,15 +134,28 @@ class peerFeedback_utils
 		$allow_self_review = get_post_meta( $projectID, 'allow_self_review', true );
 		$distributionPoints = get_post_meta( $projectID, 'distributionPoints', true );
 		
-		
-		
 
 		if($feedbackWeighting==""){$feedbackWeighting=100;}
 		if($nonCompletionPenalty==""){$nonCompletionPenalty=10;}
 		
-		
 		// Get the students in the group
 		$studentsInGroup = peerFeedback_Queries::getUsersInGroup($args);
+		$studentsInGroupLookup = array();
+		
+		
+		if(is_array($studentsInGroup) )
+		{
+
+			// Generate lookup array based on user ID
+			foreach ($studentsInGroup as $studentMeta)
+			{
+				$userID = $studentMeta['userID'];
+				$firstName = $studentMeta['firstName'];
+				$lastName = $studentMeta['lastName'];
+				$studentsInGroupLookup[$userID] = $firstName.' '.$lastName;
+				
+			}
+		}
 		
 		// Create blank array to store the totals with the userID as key
 		$tempDataCountArray = array();
@@ -194,9 +208,7 @@ class peerFeedback_utils
 			{
 				foreach ($normalisedMarksArray as $markerID => $receiverIDArray)
 				{
-					
-					/* TO DO COUNT NUMBER OF SUBMISSIONS AND IF LESS TAN STUDENT CONT GIVE NIKTHING */
-					
+										
 					$markedCount = count($receiverIDArray);
 					
 					$expectedCount = $studentCount-1;
@@ -250,30 +262,75 @@ class peerFeedback_utils
 			//Calculate Fudge Factor
 			$fudgeFactor = $studentCount / $studentsWhoGaveFeedback;
 		}
+		
+		
+		// Mark amount to adjust
+		$percentWeighting = "0.".$feedbackWeighting;
+		
+		// Adjust for 100%
+		if($feedbackWeighting==100)
+		{
+			$percentWeighting= 1;
+		}
+		
+		
+		// Also assign how much the PF will affect final score
+		$nonPercentWeighting = 1-$percentWeighting;
+		$markToAdjust = $groupMark * $percentWeighting;
+		$markNotToAdjust = $groupMark * $nonPercentWeighting;		
 
+		$tableStr.='<br/><table>';
+		$tableStr.= '<tr><td width="150px">Group Mark</td><td>'.$groupMark.'%</td></tr>';
+		$tableStr.= '<tr><td>Percent Weighting</td><td>'.$feedbackWeighting.'% of final mark</td></tr>';
+		$tableStr.= '<tr><td>Mark to Adjust</td><td>'.$markToAdjust.'% of final mark</td></tr>';
+		$tableStr.= '<tr><td>PA Fudge Factor</td><td>'.$fudgeFactor.'</td></tr>';
+		$tableStr.='</table>';
+		
 	
-		// Go through the master array creating usable lookup mini arrays
+		// Go through the master array creating usable lookup mini arrays		
+		$marksGivenByEachUserArray = array(); // Create array for overview of marks given
 		
 		if(is_array($studentsInGroup) )
 		{
+			
+
+			// Create the Table Header
+			foreach($studentsInGroup as $tempUserInfo)
+			{
+				$thisUserID = $tempUserInfo['userID'];
+				$firstName= $tempUserInfo['firstName'];	
+				$lastName= $tempUserInfo['lastName'];
+				
+			}
+			
+			
+			
 			foreach($studentsInGroup as $tempUserInfo)
 			{
 				$thisUserID = $tempUserInfo['userID'];
 				$firstName= $tempUserInfo['firstName'];	
 				$lastName= $tempUserInfo['lastName'];			
 				
+
 							
 				// Get all marks for this student and add them up				
 				$totalScore = 0;
 				foreach ($normalisedMarksArray as $markingUserID => $givenMarks)
 				{
+					
+					$thisGrade = '';
 					// Go through the given makrs looking for an array with key of that user ID
 					if(array_key_exists($thisUserID, $givenMarks) )
 					{
 						$thisGrade = $givenMarks[$thisUserID];
 						$totalScore = $totalScore+$thisGrade;
-					}				
+					}	
+					
+					$marksGivenByEachUserArray[$markingUserID][$thisUserID] = $thisGrade;
+					
+					
 				}
+
 				
 				// Now see if this student SUBMITTED any marks
 				$applyNonSubmissionPenalty=0; // By default do not apply penalty
@@ -289,19 +346,8 @@ class peerFeedback_utils
 				
 				// Calculate thte final score adjusted for the project weghting
 				
-				// Mark amount to adjust
-				$percentWeighting = "0.".$feedbackWeighting;
 				
-				// Adjust for 100%
-				if($feedbackWeighting==100)
-				{
-					$percentWeighting= 1;
-				}
-				
-				$nonPercentWeighting = 1-$percentWeighting;
-				$markToAdjust = $groupMark * $percentWeighting;
-				$markNotToAdjust = $groupMark * $nonPercentWeighting;
-			
+
 				
 				$finalActualScore = ($markToAdjust*$finalWebPA_score) + $markNotToAdjust;				
 				
@@ -329,11 +375,156 @@ class peerFeedback_utils
 				
 			}
 		}
+
+
+		
+		$tableStr.= '<table class="peerFeedbackAdminTable"><tr><td></td>';
+		
+		
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+			
+			$tableStr.='<td><strong>'.$thisName.'</strong></td>';
+			
+		}
+		$tableStr.= '<td>Total</td></tr>';
+		
 		
 
-		return $masterGroupArray;
+		foreach ($studentsInGroupLookup as $markingUserID => $thisName)
+		{
+			
+			$totalGiven = '0';
+	
+			$tableStr.='<tr><td>'.$thisName.'</td>';
+			
+			foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+			{
+				$thisGrade = '';
 				
+				if(isset($marksGivenByEachUserArray[$markingUserID][$thisUserID]) )
+				{
+					$thisGrade = $marksGivenByEachUserArray[$markingUserID][$thisUserID];
+				}
+
+				
+				if($thisGrade)
+				{
+					$totalGiven = $totalGiven + $thisGrade;
+				}
+				else
+				{
+					$thisGrade = '-';
+				}
+				$tableStr.='<td>'.$thisGrade.'</td>';
+				
+
+			}			
+			$tableStr.='<td>'.$totalGiven.'</td>';
+			
+
+			$tableStr.='</tr>';
+
 						
+		}
+		
+		
+		// NOw add the web PA scores
+		$tableStr.= '<tr><td><i>Web PA Total</i></td>';
+
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+
+			$totalWebPA_Score = $masterGroupArray[$thisUserID]['totalWebPA_Score'];
+			
+			$tableStr.= '<td><i><strong>'.$totalWebPA_Score.'<strong></i></td>';
+
+		}
+		$tableStr.='<td>-</td></tr>';	
+		
+		// Adjusted Score
+		$tableStr.= '<tr><td><i>Adjusted Score Forumla</i></td>';
+
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+			$adjustedFinalWebPA_score = $masterGroupArray[$thisUserID]['adjustedFinalWebPA_score'];
+			$prePenaltyScore = $masterGroupArray[$thisUserID]['prePenaltyScore'];			
+			$tableStr.= '<td><i>';
+			$tableStr.='('.$markToAdjust.'% * '.$adjustedFinalWebPA_score.' ) = '.round($markToAdjust * $adjustedFinalWebPA_score, 0).'%<br/>'; 
+			$tableStr.=' + '.$markNotToAdjust.'%<br/>';
+			$tableStr.=' = '.$prePenaltyScore.'%';	
+
+			$tableStr.='</i></td>';
+
+		}
+		$tableStr.='<td>-</td></tr>';			
+
+
+	
+
+	
+	
+		
+
+		// Pre penalty
+		$tableStr.= '<tr><td><i>Pre Penalty Score</i></td>';
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+
+			$prePenaltyScore = $masterGroupArray[$thisUserID]['prePenaltyScore'];			
+			$tableStr.= '<td><i>'.$prePenaltyScore.'%</i></td>';
+
+		}
+		$tableStr.='<td>-</td></tr>';
+
+		// Penalty
+		$tableStr.= '<tr><td><i>Penalty Score</i></td>';
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+
+			$nonSubmissionPenalty = $masterGroupArray[$thisUserID]['nonSubmissionPenalty'];
+			
+			$tableStr.= '<td><i>- '.$nonSubmissionPenalty.'%</i></td>';
+
+		}
+		$tableStr.='<td>-</td></tr>';		
+		
+		
+		
+
+		
+		// NOw add the final scores
+		$tableStr.= '<tr><td><strong>Final Score</strong></td>';
+
+		foreach ($studentsInGroupLookup as $thisUserID => $thisName)
+		{
+
+			$finalScore = $masterGroupArray[$thisUserID]['finalScore'];
+			
+			$tableStr.= '<td><strong>'.$finalScore.'%</strong></td>';
+
+		}		
+		$tableStr.='<td>-</td></tr>';		
+				
+				
+				
+		
+
+		$tableStr.= '</table>';
+
+				
+			
+
+			
+		$outputArray = array
+		(
+			"string"	=> $tableStr,
+			"array"	=> $masterGroupArray,
+		);
+		
+		return $outputArray;
+
+		
 		
 	}
 

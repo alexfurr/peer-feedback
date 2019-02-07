@@ -389,8 +389,11 @@ else
 		
 		
 		$args = array("groupID" => $groupID);
-		$masterGroupMarkArray = peerFeedback_utils::generateGroupMarksArray($args);
+		$masterGroupMarkReturnArray = peerFeedback_utils::generateGroupMarksArray($args);
 
+		// get the array version
+		$masterGroupMarkArray = $masterGroupMarkReturnArray['array'];
+		$masterGroupMarkTableArray = $masterGroupMarkReturnArray['string'];
 
 				
 		$colspan = 7;
@@ -548,7 +551,23 @@ else
 		}
 		echo '</table>';
 		
+		if($feedbackType<>"textOnly")
+		{
+		
+			echo '<br/><button class="button-secondary" id="breakdown'.$groupID.'">View detailed Feedback Breakdown</button>';
+			echo '<div style="display:none" id="detailedBreakdown'.$groupID.'">';
+			echo $masterGroupMarkTableArray;
+			echo '</div>';
+			
+			echo '<script>
+			jQuery( "#breakdown'.$groupID.'" ).click(function() {
+			  jQuery( "#detailedBreakdown'.$groupID.'" ).toggle("fast");
+			});
+			</script>';
+		}
+		
 		echo '</div>';
+
 	}
 }
 
