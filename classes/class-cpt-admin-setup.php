@@ -22,7 +22,6 @@ class peerFeedback_CPT
 		
 		// Slides post type metaboxes
 		add_action( 'add_meta_boxes_peer_projects', array( $this, 'addMetaBoxes_peer_projects' ));
-//		add_action( 'save_post', 'UOS_saveMetaBox_lectureselect' );		
 
 
 		// Remove and add columns in the projects table
@@ -701,11 +700,10 @@ class peerFeedback_CPT
 			);			
 
 			$columns['feedbackType'] = 'Feedback Type';			
-			$columns['groups'] = 'Student Groups';
+			$columns['groups'] = 'Groups and Feedback';
 			$columns['project_status'] = 'Project Status';
 			$columns['feedback_status'] = 'Feedback Status';
-			$columns['date'] = 'Date';						
-			
+			$columns['date'] = 'Date';			
 
 			break;
 		}
@@ -804,7 +802,23 @@ class peerFeedback_CPT
 				else
 				{
 					echo 'Status : <span class="alertText">Awaiting Launch</span><br/>';
-					echo '<a href="#TB_inline?width=200&height=150&inlineId=launchLink'.$post_ID.'" class="thickbox button-primary">Launch Project</a>';
+					
+					// Check for students
+					$args = array
+					(
+						'projectID' => $post_ID
+					);
+					$studentsArray = peerFeedback_Queries::getAllProjectStudents($args);					
+					$studentCount = count($studentsArray);
+					
+					if($studentCount>=1)
+					{						
+						echo '<a href="#TB_inline?width=200&height=150&inlineId=launchLink'.$post_ID.'" class="thickbox button-primary">Launch Project</a>';
+					}
+					else
+					{
+						echo 'No Students Found';
+					}
 					
 					// Launch Feedback popup
 					echo '<div id="launchLink'.$post_ID.'" style="display:none;">';
@@ -829,43 +843,72 @@ class peerFeedback_CPT
 			break;	
 			
 			case "feedback_status":
-				// See if the project is Live Or not
-				$feedback_status = get_post_meta( $post_ID, 'feedback_status', true );
-				
-				if($feedback_status==1)
+			
+				$project_status = get_post_meta( $post_ID, 'project_status', true );
+			
+				if($project_status<>1)
 				{
-					echo 'Status : <span class="successText">Enabled</span><br/>';
-					echo '<a href="#TB_inline?width=200&height=150&inlineId=disableFeedbackLink'.$post_ID.'" class="thickbox button-secondary">Disable feedback</a>';
-					
-					// Launch Feedback popup
-					echo '<div id="disableFeedbackLink'.$post_ID.'" style="display:none;">';
-					echo '<div style="text-align:center;">';
-					echo '<h2>Are you sure you want to make feedback unavailable?</h2>';
-					
-					echo '<a href="edit.php?post_type=peer_projects&myAction=disableFeedback&projectID='.$post_ID.'" class="button-primary"> Yes make feedback unavailable</a>';
-					
-					echo '<a href="" onclick="self.parent.tb_remove();return false" class="button-secondary">Cancel</a>';
-					echo '</div>';
-					echo '</div>';
-					// End review popup					
+					echo 'Status : <span class="alertText">Awaiting Launch</span><br/>';
 				}
 				else
 				{
-					echo 'Status : <span class="alertText">Not yet enabled</span><br/>';
-					echo '<a href="#TB_inline?width=200&height=150&inlineId=enableFeedbackLink'.$post_ID.'" class="thickbox button-primary">Enable Feedback</a>';
+
+					// See if the project is Live Or not
+					$feedback_status = get_post_meta( $post_ID, 'feedback_status', true );
 					
-					// Launch Feedback popup
-					echo '<div id="enableFeedbackLink'.$post_ID.'" style="display:none;">';
-					echo '<div style="text-align:center;">';
-					echo '<h2>Are you sure you want to enable feedback results for this project?</h2>';
-					echo 'This will send an email to each student in each group alerting them they can view their feedback<br/><br/>';
-					
-					echo '<a href="edit.php?post_type=peer_projects&myAction=enableFeedback&projectID='.$post_ID.'" class="button-primary"> Yes enable feedback for this project</a>';
-					
-					echo '<a href="" onclick="self.parent.tb_remove();return false" class="button-secondary">Cancel</a>';
-					echo '</div>';
-					echo '</div>';
-					// End review popup		
+					// Check for students
+					$args = array
+					(
+						'projectID' => $post_ID
+					);
+					$studentsArray = peerFeedback_Queries::getAllProjectStudents($args);					
+					$studentCount = count($studentsArray);		
+
+					if($studentCount>=1)
+					{
+
+						if($feedback_status==1)
+						{
+							echo 'Status : <span class="successText">Enabled</span><br/>';
+							echo '<a href="#TB_inline?width=200&height=150&inlineId=disableFeedbackLink'.$post_ID.'" class="thickbox button-secondary">Disable feedback</a>';
+							
+							// Launch Feedback popup
+							echo '<div id="disableFeedbackLink'.$post_ID.'" style="display:none;">';
+							echo '<div style="text-align:center;">';
+							echo '<h2>Are you sure you want to make feedback unavailable?</h2>';
+							
+							echo '<a href="edit.php?post_type=peer_projects&myAction=disableFeedback&projectID='.$post_ID.'" class="button-primary"> Yes make feedback unavailable</a>';
+							
+							echo '<a href="" onclick="self.parent.tb_remove();return false" class="button-secondary">Cancel</a>';
+							echo '</div>';
+							echo '</div>';
+							// End review popup					
+						}
+						else
+						{
+							echo 'Status : <span class="alertText">Not yet enabled</span><br/>';
+							echo '<a href="#TB_inline?width=200&height=150&inlineId=enableFeedbackLink'.$post_ID.'" class="thickbox button-primary">Enable Feedback</a>';
+							
+							// Launch Feedback popup
+							echo '<div id="enableFeedbackLink'.$post_ID.'" style="display:none;">';
+							echo '<div style="text-align:center;">';
+							echo '<h2>Are you sure you want to enable feedback results for this project?</h2>';
+							echo 'This will send an email to each student in each group alerting them they can view their feedback<br/><br/>';
+							
+							echo '<a href="edit.php?post_type=peer_projects&myAction=enableFeedback&projectID='.$post_ID.'" class="button-primary"> Yes enable feedback for this project</a>';
+							
+							echo '<a href="" onclick="self.parent.tb_remove();return false" class="button-secondary">Cancel</a>';
+							echo '</div>';
+							echo '</div>';
+							// End review popup		
+						}
+					}
+					else
+					{
+						echo 'Status : <span class="alertText">Not yet enabled</span><br/>';
+						echo 'No Students Found';
+
+					}
 				}
 
 				
@@ -881,35 +924,7 @@ class peerFeedback_CPT
 	
 	
 	
-	// Save metabox data on edit slide
-	function _saveMetaBox_lectureselect ( $postID )
-	{
-		// Check if nonce is set.
-		if ( ! isset( $_POST['uos_metabox_lectureselect'] ) ) {
-			return;
-		}
-		
-		// Verify that the nonce is valid.
-		if ( ! wp_verify_nonce( $_POST['uos_metabox_lectureselect'], 'save_uos_metabox_lectureselect' ) ) {
-			return;
-		}
-		
-		// If this is an autosave, our form has not been submitted, so we don't want to do anything.
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-	
-		// Check the user's permissions.
-		if ( ! current_user_can( 'edit_post', $postID ) ) {
-			return;
-		}
-		
-	
-		
-		// We don't actually do anyhting here as its handled in the addLectureParentToSlide function below
-		
-	}	
-	
+
 	
 	
 	

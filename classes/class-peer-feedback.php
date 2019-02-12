@@ -52,7 +52,7 @@ class peerFeedback
 	{
 				
 		//Frontend
-		add_action( 'wp_footer', array( $this, 'frontendEnqueues' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontendEnqueues' ) );
 		//add_action( 'wp_footer', array( $this, 'frontendInlineScript' ), 100 ); //later than enqueues
 		
 		add_action( 'admin_enqueue_scripts', array( $this, 'adminSettingsEnqueues' ) );

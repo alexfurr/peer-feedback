@@ -210,7 +210,7 @@ function ajaxFeedbackRubricUpdate(targetUserID, currentUserID, projectID)
 		
 		if(totalSubmittedCount==expectedResponses)
 		{
-			console.log('COMPLETE');
+			//console.log('COMPLETE');
 
 			jQuery("#peerFeedbackCompletePopup").show();
 
@@ -220,13 +220,7 @@ function ajaxFeedbackRubricUpdate(targetUserID, currentUserID, projectID)
 	}	
 	
 	
-	
-	
-	
 
-
-
-	
 	return false;		
 	
 }

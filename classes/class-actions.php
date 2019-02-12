@@ -11,7 +11,15 @@ class peerfeedbackActions {
 		if(!current_user_can('manage_options')){exit;}
 		
 		
-		update_post_meta( $projectID, 'project_status', 1 ); // Turn the project on
+		// Set the status to PUBLISHED
+		wp_update_post(array(
+			'ID'    =>  $projectID,
+			'post_status'   =>  'publish'
+        ));
+
+		
+		// Turn the project on
+		update_post_meta( $projectID, 'project_status', 1 );
 		
 		// Get all students in group
 		$args = array
@@ -57,7 +65,16 @@ class peerfeedbackActions {
 		if(!current_user_can('manage_options')){exit;}
 		
 		
+		// Set the status to PUBLISHED
+		wp_update_post(array(
+			'ID'    =>  $projectID,
+			'post_status'   =>  'publish'
+        ));	
+		
+		
 		update_post_meta( $projectID, 'feedback_status', 1 ); // Enable Feedback	
+		
+
 		
 		// Get PRoject Info
 		$project_title = get_the_title($projectID);		

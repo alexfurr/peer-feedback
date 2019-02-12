@@ -203,3 +203,14 @@ content: "\201C"; /*Unicode for Left Double Quote*/
 	padding-top:10px;
 	font-size:12px;
 }
+
+
+.ek-hidden
+{
+	display:none;
+}
+
+.ek-show
+{
+	display:block;
+}

@@ -251,17 +251,71 @@ class peerFeedback_utils
 				}
 			}		
 		}
-
 		
+		// Create array for those students who did NOT give feedback for penalty
 		$studentsWhoGaveFeedback = count($normalisedMarksArray);
 		
-		$fudgeFactor = 1; // Set to 1 be default
+		//$fudgeFactor = 1; // Set to 1 be default
+		
+		$penaltyUsersArray = array();
 		
 		if($studentsWhoGaveFeedback>0)
 		{
 			//Calculate Fudge Factor
-			$fudgeFactor = $studentCount / $studentsWhoGaveFeedback;
-		}
+			//$fudgeFactor = $studentCount / $studentsWhoGaveFeedback;
+			
+			// Create array of user IDs in the group
+			$studentIDsArray = array();
+			foreach ($studentsInGroup as $studentMeta)
+			{
+				$userID = $studentMeta['userID'];
+				$studentIDsArray[] = $userID;				
+			}
+			
+			// Calculate the mark to assign to everyone as they weren't there.
+			$studentsToGrade = count($studentsInGroup);
+			if($allow_self_review<>"on")
+			{
+				$studentsToGrade--;
+			}
+			
+			
+			$absentMarkToAssign = round(1/$studentsToGrade, 2);
+			
+			
+			// Now go through that array and identify those students who did not give feedback and create false array for them
+			foreach ($studentIDsArray as $userID)
+			{
+				// Check if the array key exists for this user ID
+				
+				if(!array_key_exists($userID, $normalisedMarksArray) )
+				{
+					
+					$penaltyUsersArray[] = $userID; // Add this user ID to the penalty array
+					
+					
+					foreach ($studentIDsArray as $tempUserID)
+					{
+						if($tempUserID == $userID)
+						{
+							// Don't assign marks to SELF unless its self review is on
+							if($allow_self_review=="on")
+							{
+								$normalisedMarksArray[$userID][$tempUserID] = $absentMarkToAssign;
+							}
+						}
+						else
+						{
+							$normalisedMarksArray[$userID][$tempUserID] = $absentMarkToAssign;
+						}
+
+					}
+				}
+				
+			}
+			
+		} 
+		
 		
 		
 		// Mark amount to adjust
@@ -283,7 +337,7 @@ class peerFeedback_utils
 		$tableStr.= '<tr><td width="150px">Group Mark</td><td>'.$groupMark.'%</td></tr>';
 		$tableStr.= '<tr><td>Percent Weighting</td><td>'.$feedbackWeighting.'% of final mark</td></tr>';
 		$tableStr.= '<tr><td>Mark to Adjust</td><td>'.$markToAdjust.'% of final mark</td></tr>';
-		$tableStr.= '<tr><td>PA Fudge Factor</td><td>'.$fudgeFactor.'</td></tr>';
+		//$tableStr.= '<tr><td>PA Fudge Factor</td><td>'.$fudgeFactor.'</td></tr>';
 		$tableStr.='</table>';
 		
 	
@@ -334,7 +388,7 @@ class peerFeedback_utils
 				
 				// Now see if this student SUBMITTED any marks
 				$applyNonSubmissionPenalty=0; // By default do not apply penalty
-				if(!array_key_exists($thisUserID, $normalisedMarksArray) )
+				if(in_array($thisUserID, $penaltyUsersArray) )
 				{
 					// They didn't submit so apply non submission penalty
 					$applyNonSubmissionPenalty = $nonCompletionPenalty;
@@ -342,7 +396,9 @@ class peerFeedback_utils
 				
 				
 				// Get the final webPA score by multiplying by fudge factor
-				$finalWebPA_score = round($totalScore * $fudgeFactor, 2);
+				//$finalWebPA_score = round($totalScore * $fudgeFactor, 2);
+				
+				$finalWebPA_score = round($totalScore, 2);
 				
 				// Calculate thte final score adjusted for the project weghting
 				
@@ -366,7 +422,7 @@ class peerFeedback_utils
 				"finalScore" => $finalActualScore,
 				"totalWebPA_Score" => $totalScore,
 				"adjustedFinalWebPA_score" => $finalWebPA_score,
-				"fudgeFactor" => $fudgeFactor,
+				//"fudgeFactor" => $fudgeFactor,
 				"groupMark"	=> $groupMark,
 				"nonSubmissionPenalty"	=> $applyNonSubmissionPenalty,
 				"firstName"	=> $firstName,
@@ -527,6 +583,20 @@ class peerFeedback_utils
 		
 		
 	}
+	
+	static function getTempUploadDir()
+	{
+		
+			$uploadDirInfo = wp_upload_dir();
+			$uploadPath = $uploadDirInfo['basedir'] . '/peer_feedback_temp';
+			
+			if(!file_exists($uploadPath))
+			{				
+				mkdir($uploadPath, 0755); 				
+			}			
+
+			return $uploadPath;
+	}	
 
 
 

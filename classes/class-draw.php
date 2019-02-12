@@ -252,54 +252,8 @@ class ASPFdraw {
 					
 					case "rubric":
 					case "likert":
-						echo '<script>';
-						echo "		
-						jQuery( document ).ready( function () {
-							
-							
-							// Listen for textarea change as well							
-							jQuery('.peerFeedbackTextarea').bind('input propertychange', function( ) {								
-								
-								var thisTextareaID = jQuery( this ).attr('id');								
-
-								var tempArray = thisTextareaID.split('_');
-								// The target User ID is the first element of the temp array
-								var targetUserID = tempArray[1];
-								jQuery( '#feedbackResponse_'+targetUserID ).hide( 'fast');	
-
-							});							
-							
-							
-							
-							jQuery('.td-toggle').on( 'click', function ( e ) {
-								
-								jQuery( this ).find('input:radio').prop('checked', true); // Allow the whole TD to be clicked	
-								
-								var parent_tr	= jQuery( this ).parent();
-								var tds 		= jQuery( parent_tr ).children();
-								
-								jQuery( tds ).removeClass( 'td-highlight' ); // Remove ALL highlights from tds in this row
-								jQuery( tds ).removeClass( 'td-green-highlight' ); // Remove ALL green highlights from tds in this row
-								jQuery( this ).addClass( 'td-highlight' ); // Add the highglight just to this cell
-
-								// HIDE the 'feedback saved' message if they select something else after saving
-								var thisElementID = jQuery( this ).find('input:radio').attr('id');
-								// Get the targetUserID
-								var tempArray = thisElementID.split('_');
-								// The target User ID is the first element of the temp array
-								var targetUserID = tempArray[1];
-								
-
-								
-								jQuery( '#feedbackResponse_'+targetUserID ).hide( 'fast');		
-								
-								
-								
-							});
-						});
 						
-						";
-						echo '</script>';						
+						
 					break;		
 				}// End of additional JS custom switch case
 				
@@ -481,8 +435,10 @@ class ASPFdraw {
 		
 			// Add the ajax call		
 			$clickAction='ajaxFeedbackRubricUpdate(\''.$userFeedbackID.'\', \''.$userID.'\', \''.$projectID.'\')';
-			
+
+			$str.='<div class="ek-hidden" id="ek_peer_submitButton_'.$userFeedbackID.'">';
 			$str.='<br/><a class="ek-button ek-button-primary" onclick="javascript:'.$clickAction.'">Submit Feedback</a>';
+			$str.='</div>';
 			$str.='</div>'; // End of div for entire table form wrap
 			
 			$str.='<div id="notCompleteMessage_'.$userFeedbackID.'" class="feedbackFail" style="display:none">You have not rated all criteria for this student</div>';
@@ -647,7 +603,12 @@ class ASPFdraw {
 			// Add the ajax call		
 			$clickAction='ajaxFeedbackRubricUpdate(\''.$userFeedbackID.'\', \''.$userID.'\', \''.$projectID.'\')';
 			
+			
+			$str.='<div class="ek-hidden" id="ek_peer_submitButton_'.$userFeedbackID.'">';
+
 			$str.='<br/><a class="ek-button ek-button-primary" onclick="javascript:'.$clickAction.'">Submit Feedback</a>';
+			$str.='</div>';
+			
 			$str.='</div>'; // End of div for entire table form wrap
 			
 			$str.='<div id="notCompleteMessage_'.$userFeedbackID.'" class="feedbackFail" style="display:none">You have not rated all criteria for this student</div>';	

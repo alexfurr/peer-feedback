@@ -70,21 +70,6 @@ else
     <?php
 }
 
-// Get an array of all users so we can lookup their userID easily
-$blogusers = get_users();
-$masterUserArray = array(); // Create teh array to hold usernames (KEY) against usedID
-
-foreach($blogusers as $userInfo)
-{
-	
-	$userID = $userInfo->ID;
-	$username = $userInfo->user_login;
-	$display_name = $userInfo->display_name;	
-	$masterUserArray[ $username ] = $userID; // Add username to the array with the username as key
-	
-}
-
-
 
 
 // If form was submitted then sanitize the submitted values and update the settings.
@@ -108,7 +93,11 @@ if ( isset( $_GET['action'] ) )
 			$errorString = '';
 			$errorUserArray=array(); // Create an array so that we can add problem users to
 		
-			$newFilename = dirname(__FILE__).'/tempImport.csv';			
+			$uploadPath = peerFeedback_utils::getTempUploadDir();						
+			$newFilename = $uploadPath.'/tempPeerImport.csv';
+			
+			echo 'upload ot '.$newFilename;
+
 
 			if(isset($_FILES['csvFile']['tmp_name']))
 			{
