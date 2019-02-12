@@ -467,7 +467,7 @@ else
 				echo '<img src="'.$avatar.'">';	
 
 				echo '</td>';
-				echo '<td>'.$lastName.', '.$firstName.' ('.$userID.')</td><td width="200px"><a href="mailto:'.$email.'">'.$email.'</a></td>';
+				echo '<td>'.$lastName.', '.$firstName.'</td><td width="200px"><a href="mailto:'.$email.'">'.$email.'</a></td>';
 				
 				
 				// Check if Feedback given or not 

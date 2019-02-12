@@ -54,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	
 	
 	$theContent.='<div id="submitButtonDiv_'.$textboxID.'" class="peerFeedbackSubmitButtonDiv">';
-	$theContent.='<br/><a class="pure-button pure-button-primary"/ onclick="javascript:'.$clickAction.'" id="submitButton_'.$textboxID.'" >Submit Feedback</a>';
+	$theContent.='<br/><a class="ek-button ek-button-primary"/ onclick="javascript:'.$clickAction.'" id="submitButton_'.$textboxID.'" >Submit Feedback</a>';
 	$theContent.='</div>';
 	
 	$theContent.='<div id="feedbackResponse_'.$textboxID.'" class="feedbackSuccess" style="display:none">';
